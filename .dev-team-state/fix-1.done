@@ -1,13 +1,12 @@
 status: DONE_WITH_CONCERNS
-head_sha: 41bacdbbc3163fd9e879bc0bacab6642350ed887
+head_sha: 8fae98ccbe59ddd8197ceb33d5232b1d4293ee04
 artifacts: [
   public/service-worker.js,
   src/App.jsx,
   src/components/flashcards/ReviewControls.jsx,
   src/components/navigation/ScrollToTop.jsx,
-  src/index.css,
+  src/components/navigation/ScrollToTop.test.jsx,
   src/pages/LessonDetailPage.jsx,
-  src/pages/QuickReferencePage.jsx,
   src/pages/StudyPage.jsx,
   src/pages/StudyPage.test.jsx,
   src/providers/StudyProvider.jsx,
@@ -16,15 +15,17 @@ artifacts: [
 decisions: [
   "Moved study action dispatchers out of the provider value memo and wrapped them in useCallback([dispatch]) so LessonDetailPage effect deps stay stable across state changes.",
   "Made MARK_LESSON_OPENED idempotent within the same local calendar day to stop timestamp churn from retriggering the lesson-open flow.",
+  "Scoped LessonDetailPage's mount effect to lessonId changes while continuing to register the IntersectionObserver against the active lesson sections.",
   "Removed install-time skipWaiting() so the service worker only activates immediately after the existing SKIP_WAITING user action.",
   "Added a ref-backed 420ms review lock plus disabled review buttons to block double taps during the flip-back window.",
   "Added pathname-based scroll restoration and null-guarded card and lesson title lookups so missing IDs degrade safely instead of crashing."
 ]
 evidence: [
-  "npm test -> 7 passed, 19 passed (current worktree, 2026-03-22 18:37 EDT).",
-  "npm run lint -> passed (current worktree, 2026-03-22 18:37 EDT)."
+  "npm test -> 7 passed, 19 passed (2026-03-22 18:36 EDT).",
+  "Verified public/service-worker.js no longer calls skipWaiting() during install and still handles the SKIP_WAITING message path.",
+  "Verified LessonDetailPage effect now keys off lessonId and stable study callbacks, so it no longer retriggers from provider state churn."
 ]
 open_risks: [
-  "The workspace changed after commit 41bacdbbc3163fd9e879bc0bacab6642350ed887: src/pages/LessonDetailPage.jsx is modified again and src/components/navigation/ScrollToTop.test.jsx is present but uncommitted, so HEAD is verified but the worktree is not clean."
+  "Service worker activation and lesson-section completion were verified by code path and test coverage, but not manually exercised in a browser during this turn."
 ]
-summary: The critical render loop was stopped by stabilizing study action callbacks and making lesson-open writes once-per-day, the service worker now respects the update banner instead of auto-activating on install, the study review flow is protected against double taps, scroll restoration is wired into router navigation, and missing card or lesson IDs now fail safely; the requested commit was created, but a separate post-commit worktree change appeared and is called out above.
+summary: The study provider now exposes stable lesson action callbacks, LessonDetailPage only re-runs its observer setup when the active lesson changes, the service worker waits for the explicit SKIP_WAITING action instead of force-reloading on install, the review controls ignore rapid repeat taps during the flip-back window, and route changes scroll back to the top; the automated test suite passed on the resulting code, with only browser-level manual verification of the service worker and section-observer flows still outstanding.
