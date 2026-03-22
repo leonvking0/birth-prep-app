@@ -1,0 +1,19 @@
+status: DONE_WITH_CONCERNS
+head_sha: e2ee8b5b7f3f38a3d845013f2e5032781300401e
+artifacts:
+  - .dev-team-state/review-claude.md
+evidence:
+  - Read all 37 source files (JSX, JS, CSS, HTML, service worker, manifest, config)
+  - Traced React effect dependency chains through StudyProvider useMemo -> LessonDetailPage useEffect
+  - Traced service worker lifecycle: install -> skipWaiting -> activate -> clients.claim -> controllerchange -> reload
+  - Verified spaced repetition algorithm (Leitner box promotion/demotion, interval math, queue ordering)
+  - Checked all data cross-references (quickReference IDs, relatedCardIds, lessonIds in cards)
+  - Verified dark mode flash prevention (inline script in index.html matches ThemeProvider logic)
+  - Checked router edge cases (non-existent lessonId, catch-all redirect, deep link with search params)
+  - Verified localStorage corruption fallback paths through storage.js normalization functions
+  - Checked CSS for mobile viewport overflow (FlipCard min-height vs iPhone SE)
+  - Verified PWA manifest, icon references, and meta tags for iOS compatibility
+open_risks:
+  - "[CRITICAL] Infinite re-render loop on every LessonDetailPage visit — src/pages/LessonDetailPage.jsx:16-47 combined with src/providers/StudyProvider.jsx:122-169. markLessonOpened dispatches on every effect run, useMemo recreates function identity, effect deps change, loop repeats. Sections never get marked complete."
+  - "[CRITICAL] Service worker self.skipWaiting() in install handler (public/service-worker.js:18) causes unwanted page reload on first visit and makes the update banner unreachable dead code."
+summary: The app has solid foundations — the Leitner algorithm is correct, localStorage corruption handling is thorough, dark mode flash prevention works, and the router gracefully handles invalid lesson IDs. However, two critical bugs block shipping. First, every visit to a lesson detail page triggers an infinite re-render loop because unstable function references from StudyProvider's useMemo are included in LessonDetailPage's useEffect dependency array, and the dispatched action always produces a new timestamp. The IntersectionObserver for section completion never fires because it gets torn down and recreated each frame. Second, the service worker unconditionally calls skipWaiting during install, which combined with the controllerchange reload listener causes a jarring first-visit page reload and makes the carefully built update banner mechanism dead code. Both issues need fixes before the app can be used reliably.

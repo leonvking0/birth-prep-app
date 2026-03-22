@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Birth Prep Study is a bilingual prenatal study app with lessons, spaced repetition flashcards, and quick labor-reference guidance."
+    />
+    <meta name="theme-color" content="#d56b4d" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="Birth Prep"
+    />
+    <script>
+      ;(() => {
+        const storageKey = 'birth-prep:v1:preferences'
+        const root = document.documentElement
+        const media = window.matchMedia('(prefers-color-scheme: dark)')
+        let theme = 'system'
+
+        try {
+          const raw = window.localStorage.getItem(storageKey)
+          if (raw) {
+            const parsed = JSON.parse(raw)
+            if (['light', 'dark', 'system'].includes(parsed?.theme)) {
+              theme = parsed.theme
+            }
+          }
+        } catch (error) {
+          theme = 'system'
+        }
+
+        const resolvedTheme =
+          theme === 'system' ? (media.matches ? 'dark' : 'light') : theme
+
+        root.dataset.theme = resolvedTheme
+        root.style.colorScheme = resolvedTheme
+      })()
+    </script>
+    <title>Birth Prep Study</title>
+    <script type="module" crossorigin src="./assets/index-Bijjc3eG.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CZnyt-aU.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

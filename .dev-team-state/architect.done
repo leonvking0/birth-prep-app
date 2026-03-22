@@ -1,0 +1,22 @@
+status: DONE
+head_sha: 3eb5ec9eab1878f9c9bf0c4783484d46e8f566e6
+artifacts:
+  - .dev-team-state/plan.md
+decisions:
+  - "Use HashRouter so the static Vite app works as a deployable PWA without rewrite rules"
+  - "Keep lesson markdown as source content, but hand-curate flashcards into structured JS data"
+  - "Use React context + reducer + localStorage for study state and theme persistence"
+  - "Use vanilla CSS Modules with global design tokens instead of Tailwind"
+  - "Use a 5-box Leitner system for spaced repetition and derived mastery percentages"
+  - "Implement PWA support with an explicit manifest file and custom service worker"
+evidence:
+  - "Read .dev-team-state/refined-scope.md"
+  - "Read src/data/lesson-01.md and src/data/lesson-02.md in full"
+  - "Inspected the current scaffold: package.json, vite.config.js, index.html, src/App.jsx, src/App.css, src/index.css, src/main.jsx"
+  - "Verified the repo is still the default Vite starter with no router, state layer, PWA setup, or tests"
+  - "Verified .dev-team-state/plan.md was written with file-by-file architecture, routing, data model, card inventory, PWA, styling, and test sections"
+open_risks:
+  - "PWA install icons still need to be created during developer implementation"
+  - "A few branded/English-only medical terms need consistent plain-language Chinese labels in the final UI copy"
+  - "Manual card curation is correct for two lessons, but more lesson files will need a stronger content-authoring workflow"
+summary: The implementation plan is complete and grounded in the current repo state. It specifies the exact file layout, route structure, normalized flashcard/localStorage data models, the full curated card inventory from both lesson files, a 5-box Leitner review algorithm, explicit PWA setup, styling direction, and the initial test strategy for the developer phase.
