@@ -93,6 +93,10 @@ export default function LessonDetailPage() {
           {lesson.relatedCardIds.map((cardId) => {
             const card = cardsById[cardId]
 
+            if (!card) {
+              return null
+            }
+
             return (
               <Link
                 key={cardId}

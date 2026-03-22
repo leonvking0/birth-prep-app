@@ -7,6 +7,12 @@ import { STORAGE_KEYS } from '../lib/storage.js'
 import { StudyProvider } from '../providers/StudyProvider.jsx'
 import StudyPage from './StudyPage.jsx'
 
+function waitForReviewUnlock() {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, 450)
+  })
+}
+
 function renderStudyPage(initialEntry = '/study') {
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
@@ -43,6 +49,7 @@ describe('StudyPage', () => {
     expect(storedStudy.cardStates['warning-preterm-water-break'].box).toBe(2)
     expect(storedStudy.sessionStats.totalCorrect).toBe(1)
 
+    await waitForReviewUnlock()
     await user.click(screen.getByRole('button', { name: 'Again' }))
 
     storedStudy = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.study))
@@ -51,6 +58,19 @@ describe('StudyPage', () => {
     expect(storedStudy.sessionStats.totalIncorrect).toBe(1)
 
     expect(screen.queryByText('羊水有异味 为什么重要？')).toBeNull()
+  })
+
+  it('ignores a second review tap while controls are locked', async () => {
+    const user = userEvent.setup()
+    renderStudyPage()
+
+    await user.click(screen.getByRole('button', { name: 'Got it' }))
+    await user.click(screen.getByRole('button', { name: 'Got it' }))
+
+    const storedStudy = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.study))
+    expect(storedStudy.sessionStats.totalReviews).toBe(1)
+    expect(storedStudy.sessionStats.totalCorrect).toBe(1)
+    expect(storedStudy.cardStates['warning-preterm-water-break'].box).toBe(2)
   })
 
   it('shows the empty state when no cards are due', () => {

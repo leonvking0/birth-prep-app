@@ -17,6 +17,7 @@ function formatNextStep(box) {
 
 export default function ReviewControls({
   cardState,
+  controlsDisabled = false,
   lessonTitles,
   onAgain,
   onCorrect,
@@ -39,10 +40,20 @@ export default function ReviewControls({
       </div>
 
       <div className="chip-row">
-        <button className="button-secondary" onClick={onAgain} type="button">
+        <button
+          className="button-secondary"
+          disabled={controlsDisabled}
+          onClick={onAgain}
+          type="button"
+        >
           Again
         </button>
-        <button className="button-primary" onClick={onCorrect} type="button">
+        <button
+          className="button-primary"
+          disabled={controlsDisabled}
+          onClick={onCorrect}
+          type="button"
+        >
           Got it
         </button>
       </div>

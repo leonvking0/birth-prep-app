@@ -3,7 +3,9 @@ import { quickReference } from '../data/quickReference.js'
 import styles from './QuickReferencePage.module.css'
 
 function renderCardList(cardIds) {
-  return cardIds.map((cardId) => cardsById[cardId])
+  return cardIds
+    .map((cardId) => cardsById[cardId])
+    .filter(Boolean)
 }
 
 export default function QuickReferencePage() {

@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -25,6 +26,27 @@ import {
 
 const StudyContext = createContext(null)
 const LESSON_IDS = lessons.map((lesson) => lesson.id)
+
+function asValidDate(value) {
+  const date = value instanceof Date ? value : new Date(value)
+
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function isSameLocalDay(left, right) {
+  const leftDate = asValidDate(left)
+  const rightDate = asValidDate(right)
+
+  if (!leftDate || !rightDate) {
+    return false
+  }
+
+  return (
+    leftDate.getFullYear() === rightDate.getFullYear() &&
+    leftDate.getMonth() === rightDate.getMonth() &&
+    leftDate.getDate() === rightDate.getDate()
+  )
+}
 
 function loadInitialState() {
   return {
@@ -63,6 +85,10 @@ function reviewReducer(state, action) {
       const currentProgress =
         state.lessonProgress[action.lessonId] ??
         getDefaultLessonProgress([action.lessonId])[action.lessonId]
+
+      if (isSameLocalDay(currentProgress.lastOpenedAt, action.now)) {
+        return state
+      }
 
       return {
         ...state,
@@ -110,6 +136,8 @@ function reviewReducer(state, action) {
 
 export function StudyProvider({ children }) {
   const [state, dispatch] = useReducer(reviewReducer, undefined, loadInitialState)
+  const cardStates = state.study.cardStates
+  const lessonProgress = state.lessonProgress
 
   useEffect(() => {
     saveStudyData(state.study)
@@ -119,54 +147,94 @@ export function StudyProvider({ children }) {
     saveLessonProgress(state.lessonProgress, LESSON_IDS)
   }, [state.lessonProgress])
 
-  const value = useMemo(() => {
-    const categoryMastery = getCategoryMastery(cards, state.study.cardStates)
-    const dueCards = (filters = {}, now = new Date()) =>
-      getDueCardsForCards(cards, state.study.cardStates, filters, now)
+  const getDueCards = useCallback(
+    (filters = {}, now = new Date()) =>
+      getDueCardsForCards(cards, cardStates, filters, now),
+    [cardStates],
+  )
 
+  const getLessonProgress = useCallback(
+    (lessonId) =>
+      lessonProgress[lessonId] ??
+      getDefaultLessonProgress([lessonId])[lessonId],
+    [lessonProgress],
+  )
+
+  const reviewCard = useCallback(
+    (cardId, outcome, now = new Date()) => {
+      dispatch({
+        type: 'REVIEW_CARD',
+        cardId,
+        outcome,
+        now,
+      })
+    },
+    [dispatch],
+  )
+
+  const markLessonOpened = useCallback(
+    (lessonId, now = new Date()) => {
+      dispatch({
+        type: 'MARK_LESSON_OPENED',
+        lessonId,
+        now,
+      })
+    },
+    [dispatch],
+  )
+
+  const markSectionCompleted = useCallback(
+    (lessonId, sectionId) => {
+      dispatch({
+        type: 'MARK_SECTION_COMPLETED',
+        lessonId,
+        sectionId,
+      })
+    },
+    [dispatch],
+  )
+
+  const resetProgress = useCallback(() => {
+    dispatch({ type: 'RESET_PROGRESS' })
+  }, [dispatch])
+
+  const categoryMastery = useMemo(
+    () => getCategoryMastery(cards, cardStates),
+    [cardStates],
+  )
+  const dueCount = useMemo(() => getDueCards().length, [getDueCards])
+
+  const value = useMemo(() => {
     return {
       cards,
       lessons,
-      cardStates: state.study.cardStates,
-      lessonProgress: state.lessonProgress,
+      cardStates,
+      lessonProgress,
       sessionStats: state.study.sessionStats,
       studyUpdatedAt: state.study.updatedAt,
       categoryMastery,
-      dueCount: dueCards().length,
-      getDueCards: dueCards,
-      getLessonProgress(lessonId) {
-        return (
-          state.lessonProgress[lessonId] ??
-          getDefaultLessonProgress([lessonId])[lessonId]
-        )
-      },
-      reviewCard(cardId, outcome, now = new Date()) {
-        dispatch({
-          type: 'REVIEW_CARD',
-          cardId,
-          outcome,
-          now,
-        })
-      },
-      markLessonOpened(lessonId, now = new Date()) {
-        dispatch({
-          type: 'MARK_LESSON_OPENED',
-          lessonId,
-          now,
-        })
-      },
-      markSectionCompleted(lessonId, sectionId) {
-        dispatch({
-          type: 'MARK_SECTION_COMPLETED',
-          lessonId,
-          sectionId,
-        })
-      },
-      resetProgress() {
-        dispatch({ type: 'RESET_PROGRESS' })
-      },
+      dueCount,
+      getDueCards,
+      getLessonProgress,
+      reviewCard,
+      markLessonOpened,
+      markSectionCompleted,
+      resetProgress,
     }
-  }, [state])
+  }, [
+    cardStates,
+    lessonProgress,
+    state.study.sessionStats,
+    state.study.updatedAt,
+    categoryMastery,
+    dueCount,
+    getDueCards,
+    getLessonProgress,
+    reviewCard,
+    markLessonOpened,
+    markSectionCompleted,
+    resetProgress,
+  ])
 
   return <StudyContext.Provider value={value}>{children}</StudyContext.Provider>
 }

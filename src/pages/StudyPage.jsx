@@ -11,6 +11,8 @@ import {
 import { useStudy } from '../providers/StudyProvider.jsx'
 import styles from './StudyPage.module.css'
 
+const REVIEW_LOCK_MS = 420
+
 function sanitizeLessonFilter(value) {
   return value && lessonsById[value] ? value : 'all'
 }
@@ -36,6 +38,7 @@ export default function StudyPage() {
   } = useStudy()
   const [searchParams, setSearchParams] = useSearchParams()
   const [isFlipped, setIsFlipped] = useState(false)
+  const [isReviewLocked, setIsReviewLocked] = useState(false)
   const lessonFilter = sanitizeLessonFilter(searchParams.get('lesson'))
   const categoryFilter = sanitizeCategoryFilter(searchParams.get('category'))
   const focusId = searchParams.get('focus')
@@ -52,6 +55,26 @@ export default function StudyPage() {
 
   const [sessionQueue, setSessionQueue] = useState(() => buildQueue())
   const previousFilterKeyRef = useRef(filterKey)
+  const reviewLockRef = useRef(false)
+  const reviewUnlockTimeoutRef = useRef(null)
+
+  const clearReviewUnlockTimeout = useCallback(() => {
+    if (reviewUnlockTimeoutRef.current !== null) {
+      window.clearTimeout(reviewUnlockTimeoutRef.current)
+      reviewUnlockTimeoutRef.current = null
+    }
+  }, [])
+
+  const lockReviewControls = useCallback(() => {
+    reviewLockRef.current = true
+    setIsReviewLocked(true)
+    clearReviewUnlockTimeout()
+    reviewUnlockTimeoutRef.current = window.setTimeout(() => {
+      reviewLockRef.current = false
+      setIsReviewLocked(false)
+      reviewUnlockTimeoutRef.current = null
+    }, REVIEW_LOCK_MS)
+  }, [clearReviewUnlockTimeout])
 
   useEffect(() => {
     if (previousFilterKeyRef.current !== filterKey) {
@@ -61,6 +84,13 @@ export default function StudyPage() {
       setIsFlipped(false)
     }
   }, [buildQueue, filterKey])
+
+  useEffect(
+    () => () => {
+      clearReviewUnlockTimeout()
+    },
+    [clearReviewUnlockTimeout],
+  )
 
   const currentCard = sessionQueue.length ? cardsById[sessionQueue[0]] : null
   const currentCardState = currentCard
@@ -72,7 +102,9 @@ export default function StudyPage() {
       return []
     }
 
-    return currentCard.lessonIds.map((lessonId) => lessonsById[lessonId].titleEn)
+    return currentCard.lessonIds
+      .map((lessonId) => lessonsById[lessonId]?.titleEn)
+      .filter(Boolean)
   }, [currentCard])
 
   const totalMatchingDueCards = getDueCards({
@@ -81,10 +113,11 @@ export default function StudyPage() {
   }).length
 
   const handleReview = (outcome) => {
-    if (!currentCard) {
+    if (!currentCard || reviewLockRef.current) {
       return
     }
 
+    lockReviewControls()
     reviewCard(currentCard.id, outcome)
     setIsFlipped(false)
 
@@ -178,6 +211,7 @@ export default function StudyPage() {
           <ReviewControls
             card={currentCard}
             cardState={currentCardState}
+            controlsDisabled={isReviewLocked}
             lessonTitles={lessonTitles}
             onAgain={() => handleReview('again')}
             onCorrect={() => handleReview('correct')}
