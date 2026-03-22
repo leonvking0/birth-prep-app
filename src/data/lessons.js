@@ -1,5 +1,21 @@
-import lesson01Markdown from './lesson-01.md?raw'
-import lesson02Markdown from './lesson-02.md?raw'
+import lesson01Raw from './lesson-01.md?raw'
+import lesson02Raw from './lesson-02.md?raw'
+
+// The source markdown has broken list formatting:
+// "- \n    \n    **text**" instead of "- **text**"
+// This collapses empty lines inside list items so react-markdown parses correctly.
+function cleanMarkdown(md) {
+  return md
+    // Remove empty lines between "- " and the actual content (handles 4-space indent too)
+    .replace(/^(-\s*)\n\s*\n\s{2,}/gm, '$1')
+    // Remove empty lines between "    - " (nested) and content
+    .replace(/^(\s+-\s*)\n\s*\n\s{4,}/gm, '$1')
+    // Collapse runs of blank lines inside list blocks to single blank line
+    .replace(/\n{3,}/g, '\n\n')
+}
+
+const lesson01Markdown = cleanMarkdown(lesson01Raw)
+const lesson02Markdown = cleanMarkdown(lesson02Raw)
 
 export const lessons = [
   {
