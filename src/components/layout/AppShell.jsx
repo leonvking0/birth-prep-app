@@ -118,6 +118,14 @@ export default function AppShell() {
 
   return (
     <div className={styles.shell}>
+      <button
+        className={`button-ghost ${styles.themeToggle}`}
+        onClick={cycleTheme}
+        type="button"
+        aria-label={`Theme: ${theme}`}
+      >
+        {theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🔄'}
+      </button>
       <div className={styles.frame}>
         <header className={`${styles.topBar} surface`}>
           <div className={styles.brandBlock}>
@@ -133,10 +141,6 @@ export default function AppShell() {
               <span className="pill pill-brand">Due today</span>
               <strong>{formatDueCount(dueCount)}</strong>
             </div>
-
-            <button className="button-secondary" onClick={cycleTheme} type="button">
-              Theme: {theme}
-            </button>
           </div>
         </header>
 

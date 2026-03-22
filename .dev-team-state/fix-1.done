@@ -1,5 +1,5 @@
 status: DONE_WITH_CONCERNS
-head_sha: 8fae98ccbe59ddd8197ceb33d5232b1d4293ee04
+head_sha: 4a92e09073ecfd6c9d90e26e427672e3365d1f77
 artifacts: [
   public/service-worker.js,
   src/App.jsx,
@@ -26,6 +26,7 @@ evidence: [
   "Verified LessonDetailPage effect now keys off lessonId and stable study callbacks, so it no longer retriggers from provider state churn."
 ]
 open_risks: [
-  "Service worker activation and lesson-section completion were verified by code path and test coverage, but not manually exercised in a browser during this turn."
+  "Service worker activation and lesson-section completion were verified by code path and test coverage, but not manually exercised in a browser during this turn.",
+  "The state file was updated after the latest HEAD moved to 4a92e09073ecfd6c9d90e26e427672e3365d1f77, so the worktree now contains an uncommitted .dev-team-state/fix-1.done update."
 ]
 summary: The study provider now exposes stable lesson action callbacks, LessonDetailPage only re-runs its observer setup when the active lesson changes, the service worker waits for the explicit SKIP_WAITING action instead of force-reloading on install, the review controls ignore rapid repeat taps during the flip-back window, and route changes scroll back to the top; the automated test suite passed on the resulting code, with only browser-level manual verification of the service worker and section-observer flows still outstanding.
