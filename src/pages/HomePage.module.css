@@ -1,0 +1,42 @@
+.hero {
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(1.2rem, 4vw, 1.6rem);
+}
+
+.heroGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.statCard {
+  display: grid;
+  gap: var(--space-3);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.progressGrid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.lessonList {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.lessonCard {
+  display: grid;
+  gap: var(--space-2);
+  padding: 1rem;
+}
+
+@media (min-width: 42rem) {
+  .heroGrid,
+  .progressGrid,
+  .lessonList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

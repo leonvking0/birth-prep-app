@@ -1,0 +1,207 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import FlipCard from '../components/flashcards/FlipCard.jsx'
+import ReviewControls from '../components/flashcards/ReviewControls.jsx'
+import { CARD_CATEGORIES, cardsById } from '../data/cards.js'
+import { lessonsById } from '../data/lessons.js'
+import {
+  createInitialCardState,
+  insertCardWithDelay,
+} from '../lib/spacedRepetition.js'
+import { useStudy } from '../providers/StudyProvider.jsx'
+import styles from './StudyPage.module.css'
+
+function sanitizeLessonFilter(value) {
+  return value && lessonsById[value] ? value : 'all'
+}
+
+function sanitizeCategoryFilter(value) {
+  return CARD_CATEGORIES.includes(value) ? value : 'all'
+}
+
+function reorderWithFocus(cardIds, focusId) {
+  if (!focusId || !cardIds.includes(focusId)) {
+    return cardIds
+  }
+
+  return [focusId, ...cardIds.filter((cardId) => cardId !== focusId)]
+}
+
+export default function StudyPage() {
+  const {
+    cardStates,
+    getDueCards,
+    lessons,
+    reviewCard,
+  } = useStudy()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [isFlipped, setIsFlipped] = useState(false)
+  const lessonFilter = sanitizeLessonFilter(searchParams.get('lesson'))
+  const categoryFilter = sanitizeCategoryFilter(searchParams.get('category'))
+  const focusId = searchParams.get('focus')
+  const filterKey = `${lessonFilter}:${categoryFilter}:${focusId ?? ''}`
+
+  const buildQueue = useCallback(() => {
+    const dueCardIds = getDueCards({
+      lessonId: lessonFilter,
+      category: categoryFilter,
+    }).map((card) => card.id)
+
+    return reorderWithFocus(dueCardIds, focusId)
+  }, [categoryFilter, focusId, getDueCards, lessonFilter])
+
+  const [sessionQueue, setSessionQueue] = useState(() => buildQueue())
+  const previousFilterKeyRef = useRef(filterKey)
+
+  useEffect(() => {
+    if (previousFilterKeyRef.current !== filterKey) {
+      previousFilterKeyRef.current = filterKey
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSessionQueue(buildQueue())
+      setIsFlipped(false)
+    }
+  }, [buildQueue, filterKey])
+
+  const currentCard = sessionQueue.length ? cardsById[sessionQueue[0]] : null
+  const currentCardState = currentCard
+    ? cardStates[currentCard.id] ?? createInitialCardState()
+    : createInitialCardState()
+
+  const lessonTitles = useMemo(() => {
+    if (!currentCard) {
+      return []
+    }
+
+    return currentCard.lessonIds.map((lessonId) => lessonsById[lessonId].titleEn)
+  }, [currentCard])
+
+  const totalMatchingDueCards = getDueCards({
+    lessonId: lessonFilter,
+    category: categoryFilter,
+  }).length
+
+  const handleReview = (outcome) => {
+    if (!currentCard) {
+      return
+    }
+
+    reviewCard(currentCard.id, outcome)
+    setIsFlipped(false)
+
+    setSessionQueue((previousQueue) => {
+      const [, ...remainingQueue] = previousQueue
+
+      if (outcome === 'again') {
+        return insertCardWithDelay(remainingQueue, currentCard.id)
+      }
+
+      return remainingQueue
+    })
+  }
+
+  const updateSearch = (nextValues) => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+
+    Object.entries(nextValues).forEach(([key, value]) => {
+      if (!value || value === 'all') {
+        nextSearchParams.delete(key)
+        return
+      }
+
+      nextSearchParams.set(key, value)
+    })
+
+    if (!nextValues.focus) {
+      nextSearchParams.delete('focus')
+    }
+
+    setSearchParams(nextSearchParams)
+  }
+
+  return (
+    <div className="page">
+      <section className={`${styles.header} surface`}>
+        <div className="page-heading">
+          <span className="eyebrow">Study</span>
+          <h2>Flip one card at a time and keep weak prompts cycling back.</h2>
+          <p className="page-subtitle">
+            Queue order favors overdue cards first, then lower-box cards, then warning items.
+          </p>
+        </div>
+
+        <div className={styles.filters}>
+          <div className="chip-row">
+            <button
+              type="button"
+              className={lessonFilter === 'all' ? 'button-primary' : 'button-secondary'}
+              onClick={() => updateSearch({ lesson: 'all', focus: null })}
+            >
+              All lessons
+            </button>
+            {lessons.map((lesson) => (
+              <button
+                key={lesson.id}
+                type="button"
+                className={lessonFilter === lesson.id ? 'button-primary' : 'button-secondary'}
+                onClick={() => updateSearch({ lesson: lesson.id, focus: null })}
+              >
+                {lesson.titleEn}
+              </button>
+            ))}
+          </div>
+
+          <div className="chip-row">
+            <button
+              type="button"
+              className={categoryFilter === 'all' ? 'button-primary' : 'button-secondary'}
+              onClick={() => updateSearch({ category: 'all', focus: null })}
+            >
+              All categories
+            </button>
+            {CARD_CATEGORIES.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className={categoryFilter === category ? 'button-primary' : 'button-secondary'}
+                onClick={() => updateSearch({ category, focus: null })}
+              >
+                {category.replace('_', ' ')}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {currentCard ? (
+        <>
+          <FlipCard card={currentCard} isFlipped={isFlipped} onFlip={() => setIsFlipped((value) => !value)} />
+          <ReviewControls
+            card={currentCard}
+            cardState={currentCardState}
+            lessonTitles={lessonTitles}
+            onAgain={() => handleReview('again')}
+            onCorrect={() => handleReview('correct')}
+            remainingCount={sessionQueue.length}
+          />
+        </>
+      ) : (
+        <section className="surface empty-state">
+          <h2>No due cards for this queue.</h2>
+          <p className="subtle">
+            {totalMatchingDueCards === 0
+              ? 'You are caught up on this filter. Open a lesson or quick reference while the queue stays clear.'
+              : 'Change the filters to rebuild a fresh queue.'}
+          </p>
+          <div className="chip-row">
+            <Link className="button-primary" to="/lessons">
+              Browse lessons
+            </Link>
+            <Link className="button-secondary" to="/quick-reference">
+              Open quick reference
+            </Link>
+          </div>
+        </section>
+      )}
+    </div>
+  )
+}

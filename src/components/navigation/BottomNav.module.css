@@ -1,0 +1,48 @@
+.nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0.8rem;
+  width: min(calc(100% - 1rem), var(--content-max));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+  padding: 0.5rem;
+  z-index: 20;
+}
+
+.link {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  padding: 0.55rem 0.4rem 0.7rem;
+  border-radius: 1rem;
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition:
+    color var(--transition-base),
+    background-color var(--transition-base),
+    transform var(--transition-base);
+}
+
+.link:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.active {
+  color: var(--brand-strong);
+  background: var(--brand-soft);
+}
+
+.icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

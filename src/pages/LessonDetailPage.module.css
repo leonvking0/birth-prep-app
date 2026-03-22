@@ -1,0 +1,11 @@
+.header,
+.reader,
+.related {
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(1.1rem, 4vw, 1.6rem);
+}
+
+.reader {
+  overflow: hidden;
+}

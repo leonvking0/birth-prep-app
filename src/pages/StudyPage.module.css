@@ -1,0 +1,10 @@
+.header {
+  display: grid;
+  gap: var(--space-5);
+  padding: clamp(1.1rem, 4vw, 1.6rem);
+}
+
+.filters {
+  display: grid;
+  gap: var(--space-3);
+}
