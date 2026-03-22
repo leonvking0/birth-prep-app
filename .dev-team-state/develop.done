@@ -1,0 +1,75 @@
+status: DONE
+head_sha: e2ee8b5b7f3f38a3d845013f2e5032781300401e
+artifacts:
+  - .dev-team-state/architect.done
+  - .dev-team-state/plan.md
+  - .dev-team-state/develop.done
+  - index.html
+  - package-lock.json
+  - package.json
+  - public/apple-touch-icon.png
+  - public/favicon.svg
+  - public/icons.svg (deleted)
+  - public/manifest.webmanifest
+  - public/maskable-512.png
+  - public/pwa-192.png
+  - public/pwa-512.png
+  - public/service-worker.js
+  - src/App.css (deleted)
+  - src/App.jsx
+  - src/app/routes.jsx
+  - src/assets/hero.png (deleted)
+  - src/assets/react.svg (deleted)
+  - src/assets/vite.svg (deleted)
+  - src/components/flashcards/FlipCard.jsx
+  - src/components/flashcards/FlipCard.module.css
+  - src/components/flashcards/ReviewControls.jsx
+  - src/components/layout/AppShell.jsx
+  - src/components/layout/AppShell.module.css
+  - src/components/lesson/LessonMarkdown.jsx
+  - src/components/lesson/SectionJumpNav.jsx
+  - src/components/navigation/BottomNav.jsx
+  - src/components/navigation/BottomNav.module.css
+  - src/components/progress/ProgressRing.jsx
+  - src/components/pwa/InstallBanner.jsx
+  - src/data/cards.js
+  - src/data/cards.test.js
+  - src/data/lessons.js
+  - src/data/quickReference.js
+  - src/index.css
+  - src/lib/pwa/registerServiceWorker.js
+  - src/lib/spacedRepetition.js
+  - src/lib/spacedRepetition.test.js
+  - src/lib/storage.js
+  - src/lib/storage.test.js
+  - src/main.jsx
+  - src/pages/HomePage.jsx
+  - src/pages/HomePage.module.css
+  - src/pages/LessonDetailPage.jsx
+  - src/pages/LessonDetailPage.module.css
+  - src/pages/LessonsPage.jsx
+  - src/pages/QuickReferencePage.jsx
+  - src/pages/QuickReferencePage.module.css
+  - src/pages/QuickReferencePage.test.jsx
+  - src/pages/StudyPage.jsx
+  - src/pages/StudyPage.module.css
+  - src/pages/StudyPage.test.jsx
+  - src/providers/StudyProvider.jsx
+  - src/providers/ThemeProvider.jsx
+  - src/test/setup.js
+  - vite.config.js
+decisions:
+  - Kept the app in JavaScript/JSX, used HashRouter, and centered the UI around a mobile-first shell with CSS modules plus global theme tokens.
+  - Implemented a 69-card curated dataset with lesson metadata, quick-reference groupings, localStorage-backed study state, and a 5-box Leitner scheduler with delayed in-session requeue on Again.
+  - Used markdown raw imports as the lesson source of truth, mapped stable section anchors from lesson metadata, and auto-marked section progress via IntersectionObserver when supported.
+  - Added a custom manifest, service worker, generated PNG icon set, and install/update banner flow so the app is installable and can reload offline after an initial successful online visit.
+evidence:
+  - npm test -> PASS (5 test files, 15 tests passed)
+  - npm run build -> PASS (Vite production build completed successfully)
+  - npm run lint -> PASS (ESLint completed with no errors)
+  - git commit -> PASS (feat: complete birth-prep study app)
+open_risks:
+  - Section completion depends on IntersectionObserver; unsupported browsers still read lessons normally but will not auto-mark section progress.
+  - The flashcard corpus is manually curated from the two markdown lessons, so future lesson edits must keep cards and section metadata in sync by hand.
+  - The service worker precaches shell assets and caches built assets at runtime, so offline reload still assumes at least one successful online visit first.
+summary: Implemented the complete Birth Prep Study app described in plan.md: replaced the Vite starter with a mobile-first routed React PWA, added the full bilingual prenatal flashcard dataset and spaced repetition logic, wired persistent theme/study/lesson progress state, built the dashboard/lesson/study/quick-reference pages and shared components, generated install icons and service-worker support, removed starter assets, verified lint/tests/build, and committed the result at the recorded head SHA.

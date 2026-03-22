@@ -14,13 +14,15 @@ export default function LessonDetailPage() {
   const lessonProgress = lesson ? getLessonProgress(lesson.id) : null
 
   useEffect(() => {
-    if (!lesson) {
+    const activeLesson = lessonId ? lessonsById[lessonId] : null
+
+    if (!activeLesson) {
       return undefined
     }
 
-    markLessonOpened(lesson.id)
+    markLessonOpened(activeLesson.id)
 
-    const sectionElements = lesson.sections
+    const sectionElements = activeLesson.sections
       .map((section) => document.getElementById(section.id))
       .filter(Boolean)
 
@@ -32,7 +34,7 @@ export default function LessonDetailPage() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            markSectionCompleted(lesson.id, entry.target.id)
+            markSectionCompleted(activeLesson.id, entry.target.id)
           }
         })
       },
@@ -44,7 +46,7 @@ export default function LessonDetailPage() {
     sectionElements.forEach((sectionElement) => observer.observe(sectionElement))
 
     return () => observer.disconnect()
-  }, [lesson, markLessonOpened, markSectionCompleted])
+  }, [lessonId, markLessonOpened, markSectionCompleted])
 
   if (!lesson) {
     return (

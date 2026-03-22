@@ -1,0 +1,14 @@
+status: DONE_WITH_CONCERNS
+head_sha: e2ee8b5b7f3f38a3d845013f2e5032781300401e
+artifacts:
+  - .dev-team-state/review-codex.md
+evidence:
+  - Read .dev-team-state/plan.md and compared the implementation against the intended router/provider/storage/PWA architecture.
+  - Reviewed all non-generated app source under src/, plus public/service-worker.js, public/manifest.webmanifest, index.html, package.json, and vite.config.js.
+  - Audited the Leitner implementation, queue ordering, localStorage normalization/version fallback, lesson progress wiring, and the full flashcard dataset.
+  - Ran npm test successfully (5 files, 15 tests passed) and npm run build successfully.
+  - Verified dataset structure separately: 69 cards total, no duplicate IDs, no invalid lesson/category/section references, and no missing required prompt/title fields.
+open_risks:
+  - Lesson section IDs do not match rendered markdown headings, so lesson jump navigation and section completion tracking do not work (src/components/lesson/LessonMarkdown.jsx:28-47, src/pages/LessonDetailPage.jsx:23-27, src/pages/LessonDetailPage.jsx:70-79).
+  - LessonDetailPage depends on unstable provider callbacks and unconditionally dispatches markLessonOpened, which can cause repeated state updates and localStorage writes on the lesson page (src/providers/StudyProvider.jsx:122-169, src/pages/LessonDetailPage.jsx:16-21, src/pages/LessonDetailPage.jsx:47).
+summary: I completed a full ship review against the planned architecture, read the app source systematically, checked the Leitner and storage paths, and validated the 69-card dataset structure. The main blockers are both in the lesson experience: the curated section IDs never bind to the actual markdown headings, so section jumping/progress are broken, and the lesson page effect is wired to unstable provider callbacks in a way that can re-dispatch and rewrite progress continuously. The existing tests and production build both pass, but they do not cover the lesson flow where the blocking defects live.

@@ -1,0 +1,30 @@
+status: DONE_WITH_CONCERNS
+head_sha: 41bacdbbc3163fd9e879bc0bacab6642350ed887
+artifacts: [
+  public/service-worker.js,
+  src/App.jsx,
+  src/components/flashcards/ReviewControls.jsx,
+  src/components/navigation/ScrollToTop.jsx,
+  src/index.css,
+  src/pages/LessonDetailPage.jsx,
+  src/pages/QuickReferencePage.jsx,
+  src/pages/StudyPage.jsx,
+  src/pages/StudyPage.test.jsx,
+  src/providers/StudyProvider.jsx,
+  src/providers/StudyProvider.test.jsx
+]
+decisions: [
+  "Moved study action dispatchers out of the provider value memo and wrapped them in useCallback([dispatch]) so LessonDetailPage effect deps stay stable across state changes.",
+  "Made MARK_LESSON_OPENED idempotent within the same local calendar day to stop timestamp churn from retriggering the lesson-open flow.",
+  "Removed install-time skipWaiting() so the service worker only activates immediately after the existing SKIP_WAITING user action.",
+  "Added a ref-backed 420ms review lock plus disabled review buttons to block double taps during the flip-back window.",
+  "Added pathname-based scroll restoration and null-guarded card and lesson title lookups so missing IDs degrade safely instead of crashing."
+]
+evidence: [
+  "npm test -> 7 passed, 19 passed (current worktree, 2026-03-22 18:37 EDT).",
+  "npm run lint -> passed (current worktree, 2026-03-22 18:37 EDT)."
+]
+open_risks: [
+  "The workspace changed after commit 41bacdbbc3163fd9e879bc0bacab6642350ed887: src/pages/LessonDetailPage.jsx is modified again and src/components/navigation/ScrollToTop.test.jsx is present but uncommitted, so HEAD is verified but the worktree is not clean."
+]
+summary: The critical render loop was stopped by stabilizing study action callbacks and making lesson-open writes once-per-day, the service worker now respects the update banner instead of auto-activating on install, the study review flow is protected against double taps, scroll restoration is wired into router navigation, and missing card or lesson IDs now fail safely; the requested commit was created, but a separate post-commit worktree change appeared and is called out above.
