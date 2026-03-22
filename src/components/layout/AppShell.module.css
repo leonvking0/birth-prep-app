@@ -1,14 +1,17 @@
 .shell {
   min-height: 100vh;
-  padding: clamp(0.75rem, 3vw, 1.5rem);
+  padding: clamp(0.4rem, 2vw, 1.5rem);
   padding-bottom: calc(var(--nav-height) + 1.25rem);
+  overflow-x: hidden;
 }
 
 .frame {
-  width: min(100%, var(--content-max));
+  width: 100%;
+  max-width: var(--content-max);
   margin: 0 auto;
   display: grid;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .topBar {

@@ -80,11 +80,13 @@
 html {
   min-height: 100%;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   font-family: var(--font-sans);
   line-height: 1.5;
   color: var(--text);
@@ -161,8 +163,9 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-size: clamp(1.2rem, 3.5vw, 2.2rem);
   letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
 }
 
 h3 {
@@ -222,6 +225,8 @@ pre {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(16px);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .surface-strong {
@@ -366,10 +371,14 @@ pre {
   gap: var(--space-5);
   font-size: 1rem;
   color: var(--text-muted);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .lesson-markdown h1 {
-  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  overflow-wrap: anywhere;
 }
 
 .lesson-markdown h2 {
