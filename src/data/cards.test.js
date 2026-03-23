@@ -19,6 +19,12 @@ describe('flashcard dataset', () => {
       expect(card.back.titleZh).toBeTruthy()
       expect(card.back.titleEn).toBeTruthy()
       expect(card.back.summary).toBeTruthy()
+      expect(card.back.summaryZh).toBeTruthy()
+      expect(card.back.summaryEn).toBeTruthy()
+      expect(card.back.bulletsZh?.length).toBeGreaterThan(0)
+      expect(card.back.bulletsEn?.length).toBeGreaterThan(0)
+      expect(card.back.contextZh).toBeTruthy()
+      expect(card.back.contextEn).toBeTruthy()
     })
   })
 

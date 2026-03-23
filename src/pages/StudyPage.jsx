@@ -2,12 +2,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import FlipCard from '../components/flashcards/FlipCard.jsx'
 import ReviewControls from '../components/flashcards/ReviewControls.jsx'
-import { CARD_CATEGORIES, cardsById } from '../data/cards.js'
+import { CARD_CATEGORIES, CATEGORY_META, cardsById } from '../data/cards.js'
 import { lessonsById } from '../data/lessons.js'
 import {
   createInitialCardState,
   insertCardWithDelay,
 } from '../lib/spacedRepetition.js'
+import { useLanguage } from '../providers/LanguageProvider.jsx'
 import { useStudy } from '../providers/StudyProvider.jsx'
 import styles from './StudyPage.module.css'
 
@@ -30,6 +31,7 @@ function reorderWithFocus(cardIds, focusId) {
 }
 
 export default function StudyPage() {
+  const { language, t } = useLanguage()
   const {
     cardStates,
     getDueCards,
@@ -103,9 +105,11 @@ export default function StudyPage() {
     }
 
     return currentCard.lessonIds
-      .map((lessonId) => lessonsById[lessonId]?.titleEn)
+      .map((lessonId) =>
+        language === 'zh' ? lessonsById[lessonId]?.titleZh : lessonsById[lessonId]?.titleEn,
+      )
       .filter(Boolean)
-  }, [currentCard])
+  }, [currentCard, language])
 
   const totalMatchingDueCards = getDueCards({
     lessonId: lessonFilter,
@@ -155,11 +159,9 @@ export default function StudyPage() {
     <div className="page">
       <section className={`${styles.header} surface`}>
         <div className="page-heading">
-          <span className="eyebrow">Study</span>
-          <h2>Flip one card at a time and keep weak prompts cycling back.</h2>
-          <p className="page-subtitle">
-            Queue order favors overdue cards first, then lower-box cards, then warning items.
-          </p>
+          <span className="eyebrow">{t('study.eyebrow')}</span>
+          <h2>{t('study.title')}</h2>
+          <p className="page-subtitle">{t('study.subtitle')}</p>
         </div>
 
         <div className={styles.filters}>
@@ -169,7 +171,7 @@ export default function StudyPage() {
               className={lessonFilter === 'all' ? 'button-primary' : 'button-secondary'}
               onClick={() => updateSearch({ lesson: 'all', focus: null })}
             >
-              All lessons
+              {t('study.allLessons')}
             </button>
             {lessons.map((lesson) => (
               <button
@@ -178,7 +180,7 @@ export default function StudyPage() {
                 className={lessonFilter === lesson.id ? 'button-primary' : 'button-secondary'}
                 onClick={() => updateSearch({ lesson: lesson.id, focus: null })}
               >
-                {lesson.titleEn}
+                {language === 'zh' ? lesson.titleZh : lesson.titleEn}
               </button>
             ))}
           </div>
@@ -189,7 +191,7 @@ export default function StudyPage() {
               className={categoryFilter === 'all' ? 'button-primary' : 'button-secondary'}
               onClick={() => updateSearch({ category: 'all', focus: null })}
             >
-              All categories
+              {t('study.allCategories')}
             </button>
             {CARD_CATEGORIES.map((category) => (
               <button
@@ -198,7 +200,7 @@ export default function StudyPage() {
                 className={categoryFilter === category ? 'button-primary' : 'button-secondary'}
                 onClick={() => updateSearch({ category, focus: null })}
               >
-                {category.replace('_', ' ')}
+                {language === 'zh' ? CATEGORY_META[category].labelZh : CATEGORY_META[category].labelEn}
               </button>
             ))}
           </div>
@@ -209,7 +211,6 @@ export default function StudyPage() {
         <>
           <FlipCard card={currentCard} isFlipped={isFlipped} onFlip={() => setIsFlipped((value) => !value)} />
           <ReviewControls
-            card={currentCard}
             cardState={currentCardState}
             controlsDisabled={isReviewLocked}
             lessonTitles={lessonTitles}
@@ -220,18 +221,18 @@ export default function StudyPage() {
         </>
       ) : (
         <section className="surface empty-state">
-          <h2>No due cards for this queue.</h2>
+          <h2>{t('study.emptyTitle')}</h2>
           <p className="subtle">
             {totalMatchingDueCards === 0
-              ? 'You are caught up on this filter. Open a lesson or quick reference while the queue stays clear.'
-              : 'Change the filters to rebuild a fresh queue.'}
+              ? t('study.emptyClear')
+              : t('study.emptyFilters')}
           </p>
           <div className="chip-row">
             <Link className="button-primary" to="/lessons">
-              Browse lessons
+              {t('study.browseLessons')}
             </Link>
             <Link className="button-secondary" to="/quick-reference">
-              Open quick reference
+              {t('study.openQuickReference')}
             </Link>
           </div>
         </section>

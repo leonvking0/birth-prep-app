@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useLanguage } from '../../providers/LanguageProvider.jsx'
 import styles from './BottomNav.module.css'
 
 function NavIcon({ children }) {
@@ -12,7 +13,7 @@ function NavIcon({ children }) {
 const navItems = [
   {
     to: '/',
-    label: 'Home',
+    labelKey: 'nav.home',
     icon: (
       <NavIcon>
         <path d="M4 10.8 12 4l8 6.8" />
@@ -22,7 +23,7 @@ const navItems = [
   },
   {
     to: '/lessons',
-    label: 'Lessons',
+    labelKey: 'nav.lessons',
     icon: (
       <NavIcon>
         <path d="M6 6.5h12" />
@@ -33,7 +34,7 @@ const navItems = [
   },
   {
     to: '/study',
-    label: 'Study',
+    labelKey: 'nav.study',
     icon: (
       <NavIcon>
         <rect x="4.5" y="6" width="15" height="12" rx="2.5" />
@@ -43,7 +44,7 @@ const navItems = [
   },
   {
     to: '/quick-reference',
-    label: 'Quick Ref',
+    labelKey: 'nav.quickRef',
     icon: (
       <NavIcon>
         <path d="M12 4.5v15" />
@@ -55,8 +56,10 @@ const navItems = [
 ]
 
 export default function BottomNav() {
+  const { t } = useLanguage()
+
   return (
-    <nav className={`${styles.nav} surface`} aria-label="Primary">
+    <nav className={`${styles.nav} surface`} aria-label={t('nav.primary')}>
       {navItems.map((item) => (
         <NavLink
           key={item.to}
@@ -65,7 +68,7 @@ export default function BottomNav() {
           className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
         >
           {item.icon}
-          <span>{item.label}</span>
+          <span>{t(item.labelKey)}</span>
         </NavLink>
       ))}
     </nav>

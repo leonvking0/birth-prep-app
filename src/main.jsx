@@ -4,6 +4,7 @@ import { HashRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { ThemeProvider } from './providers/ThemeProvider.jsx'
+import { LanguageProvider } from './providers/LanguageProvider.jsx'
 import { StudyProvider } from './providers/StudyProvider.jsx'
 import { registerServiceWorker } from './lib/pwa/registerServiceWorker.js'
 
@@ -15,9 +16,11 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HashRouter>
       <ThemeProvider>
-        <StudyProvider>
-          <App />
-        </StudyProvider>
+        <LanguageProvider>
+          <StudyProvider>
+            <App />
+          </StudyProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </HashRouter>
   </StrictMode>,

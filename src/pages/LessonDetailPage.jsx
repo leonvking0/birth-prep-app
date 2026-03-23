@@ -4,12 +4,14 @@ import LessonMarkdown from '../components/lesson/LessonMarkdown.jsx'
 import SectionJumpNav from '../components/lesson/SectionJumpNav.jsx'
 import { cardsById } from '../data/cards.js'
 import { lessonsById } from '../data/lessons.js'
+import { useLanguage } from '../providers/LanguageProvider.jsx'
 import { useStudy } from '../providers/StudyProvider.jsx'
 import styles from './LessonDetailPage.module.css'
 
 export default function LessonDetailPage() {
   const { lessonId } = useParams()
   const lesson = lessonsById[lessonId]
+  const { language, t } = useLanguage()
   const { getLessonProgress, markLessonOpened, markSectionCompleted } = useStudy()
   const lessonProgress = lesson ? getLessonProgress(lesson.id) : null
 
@@ -51,22 +53,32 @@ export default function LessonDetailPage() {
   if (!lesson) {
     return (
       <section className="surface empty-state">
-        <h2>Lesson not found</h2>
-        <p className="subtle">The requested lesson ID does not exist in the current study pack.</p>
+        <h2>{t('lessonDetail.notFoundTitle')}</h2>
+        <p className="subtle">{t('lessonDetail.notFoundBody')}</p>
         <Link className="button-primary" to="/lessons">
-          Back to lessons
+          {t('lessonDetail.back')}
         </Link>
       </section>
     )
   }
 
+  const lessonTitle = language === 'zh' ? lesson.titleZh : lesson.titleEn
+  const lessonSummary =
+    language === 'zh'
+      ? lesson.summaryZh ?? lesson.summary
+      : lesson.summaryEn ?? lesson.summary
+
   return (
     <div className="page">
+      <Link className="button-secondary" to="/lessons">
+        {t('lessonDetail.back')}
+      </Link>
+
       <section className={`${styles.header} surface`}>
         <div className="page-heading">
-          <span className="eyebrow">{lesson.titleZh}</span>
-          <h2>{lesson.titleEn}</h2>
-          <p className="page-subtitle">{lesson.summary}</p>
+          <span className="eyebrow">{t('lessonDetail.eyebrow')}</span>
+          <h2>{lessonTitle}</h2>
+          <p className="page-subtitle">{lessonSummary}</p>
         </div>
 
         <SectionJumpNav
@@ -87,8 +99,8 @@ export default function LessonDetailPage() {
 
       <section className={`${styles.related} surface`}>
         <div className="page-heading">
-          <span className="eyebrow">Related cards</span>
-          <h2>Open the matching study prompts.</h2>
+          <span className="eyebrow">{t('lessonDetail.relatedEyebrow')}</span>
+          <h2>{t('lessonDetail.relatedTitle')}</h2>
         </div>
 
         <div className="chip-row">
@@ -105,7 +117,7 @@ export default function LessonDetailPage() {
                 className="button-secondary"
                 to={`/study?lesson=${lesson.id}&focus=${cardId}`}
               >
-                {card.back.titleEn}
+                {language === 'zh' ? card.back.titleZh : card.back.titleEn}
               </Link>
             )
           })}

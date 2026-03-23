@@ -57,21 +57,21 @@
   min-height: 100%;
 }
 
-.promptZh {
+.prompt {
   font-family: var(--font-heading);
   font-size: clamp(1.55rem, 6vw, 2.5rem);
   line-height: 1.18;
-}
-
-.promptEn {
-  font-size: 1.08rem;
-  color: var(--text-muted);
 }
 
 .summary {
   font-family: var(--font-heading);
   font-size: clamp(1.2rem, 4.8vw, 1.9rem);
   line-height: 1.2;
+}
+
+.translationBlock {
+  display: grid;
+  gap: var(--space-3);
 }
 
 .bulletList {

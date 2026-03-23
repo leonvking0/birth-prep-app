@@ -1,3 +1,5 @@
+import { useLanguage } from '../../providers/LanguageProvider.jsx'
+
 export default function InstallBanner({
   kind = 'install',
   message,
@@ -6,11 +8,13 @@ export default function InstallBanner({
   onConfirm,
   onDismiss,
 }) {
+  const { t } = useLanguage()
+
   return (
     <section className="surface install-banner" data-kind={kind}>
       <div className="page-heading">
         <span className={kind === 'update' ? 'pill pill-accent' : 'pill pill-brand'}>
-          {kind === 'update' ? 'Update ready' : 'Install app'}
+          {kind === 'update' ? t('banner.update') : t('banner.install')}
         </span>
         <strong>{message}</strong>
         <p className="subtle">{description}</p>
@@ -22,7 +26,7 @@ export default function InstallBanner({
         </button>
         {onDismiss ? (
           <button className="button-secondary" onClick={onDismiss} type="button">
-            Not now
+            {t('banner.dismiss')}
           </button>
         ) : null}
       </div>

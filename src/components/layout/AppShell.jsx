@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { activateServiceWorkerUpdate, subscribeToServiceWorker } from '../../lib/pwa/registerServiceWorker.js'
 import { loadPreferences, updatePreferences } from '../../lib/storage.js'
+import { useLanguage } from '../../providers/LanguageProvider.jsx'
 import { useStudy } from '../../providers/StudyProvider.jsx'
 import { useTheme } from '../../providers/ThemeProvider.jsx'
 import InstallBanner from '../pwa/InstallBanner.jsx'
@@ -20,18 +21,11 @@ function isStandaloneDisplay() {
   return window.navigator.standalone === true
 }
 
-function formatDueCount(dueCount) {
-  if (dueCount === 1) {
-    return '1 card due'
-  }
-
-  return `${dueCount} cards due`
-}
-
 export default function AppShell() {
   const location = useLocation()
   const { dueCount } = useStudy()
   const { theme, cycleTheme } = useTheme()
+  const { language, toggleLanguage, t } = useLanguage()
   const [installPromptEvent, setInstallPromptEvent] = useState(null)
   const [installDismissedAt, setInstallDismissedAt] = useState(
     () => loadPreferences().installPromptDismissedAt,
@@ -118,28 +112,40 @@ export default function AppShell() {
 
   return (
     <div className={styles.shell}>
-      <button
-        className={`button-ghost ${styles.themeToggle}`}
-        onClick={cycleTheme}
-        type="button"
-        aria-label={`Theme: ${theme}`}
-      >
-        {theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🔄'}
-      </button>
+      <div className={styles.toggleGroup}>
+        <button
+          className={`button-ghost ${styles.utilityToggle}`}
+          onClick={toggleLanguage}
+          type="button"
+          aria-label={t('language.toggleAria', {
+            nextLanguage: t(`language.next.${language}`),
+          })}
+        >
+          {t(`language.current.${language}`)}
+        </button>
+        <button
+          className={`button-ghost ${styles.utilityToggle}`}
+          onClick={cycleTheme}
+          type="button"
+          aria-label={t('theme.toggleAria', {
+            theme: t(`theme.${theme}`),
+          })}
+        >
+          {theme === 'dark' ? '🌙' : theme === 'light' ? '☀️' : '🔄'}
+        </button>
+      </div>
       <div className={styles.frame}>
         <header className={`${styles.topBar} surface`}>
           <div className={styles.brandBlock}>
-            <span className="eyebrow">Birth Prep Study</span>
-            <h1 className={styles.title}>Study labor support with a phone-first flow.</h1>
-            <p className="subtle">
-              Lessons, spaced repetition, and emergency quick reference in one place.
-            </p>
+            <span className="eyebrow">{t('app.brand')}</span>
+            <h1 className={styles.title}>{t('app.title')}</h1>
+            <p className="subtle">{t('app.subtitle')}</p>
           </div>
 
           <div className={styles.actions}>
             <div className={`${styles.summaryCard} surface-strong`}>
-              <span className="pill pill-brand">Due today</span>
-              <strong>{formatDueCount(dueCount)}</strong>
+              <span className="pill pill-brand">{t('app.dueToday')}</span>
+              <strong>{t('app.dueCount', { count: dueCount })}</strong>
             </div>
           </div>
         </header>
@@ -148,9 +154,9 @@ export default function AppShell() {
           <InstallBanner
             kind="update"
             onConfirm={() => outletContext.installState.applyUpdate()}
-            message="A refreshed offline bundle is ready."
-            description="Reload into the latest version once you are at a safe stopping point."
-            confirmLabel="Update now"
+            message={t('app.updateMessage')}
+            description={t('app.updateDescription')}
+            confirmLabel={t('app.updateConfirm')}
           />
         ) : null}
 

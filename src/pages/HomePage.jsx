@@ -2,6 +2,7 @@ import { Link, useOutletContext } from 'react-router-dom'
 import { CATEGORY_META } from '../data/cards.js'
 import InstallBanner from '../components/pwa/InstallBanner.jsx'
 import ProgressRing from '../components/progress/ProgressRing.jsx'
+import { useLanguage } from '../providers/LanguageProvider.jsx'
 import { useStudy } from '../providers/StudyProvider.jsx'
 import styles from './HomePage.module.css'
 
@@ -15,20 +16,26 @@ function getLessonProgressRatio(lesson, lessonProgress) {
 
 export default function HomePage() {
   const { installState } = useOutletContext()
+  const { language, t } = useLanguage()
   const { categoryMastery, dueCount, lessons, lessonProgress, sessionStats } = useStudy()
 
   const nextLesson =
     lessons.find((lesson) => getLessonProgressRatio(lesson, lessonProgress[lesson.id]) < 1) ??
     lessons[0]
+  const nextLessonTitle = language === 'zh' ? nextLesson.titleZh : nextLesson.titleEn
+  const nextLessonSummary =
+    language === 'zh'
+      ? nextLesson.summaryZh ?? nextLesson.summary
+      : nextLesson.summaryEn ?? nextLesson.summary
 
   return (
     <div className="page">
       {installState.canInstall ? (
         <InstallBanner
           kind="install"
-          message="Keep the study app on the home screen."
-          description="Install it for faster launch, offline access, and a clean full-screen reading view."
-          confirmLabel="Install now"
+          message={t('home.installMessage')}
+          description={t('home.installDescription')}
+          confirmLabel={t('home.installConfirm')}
           onConfirm={installState.installApp}
           onDismiss={installState.dismissInstall}
         />
@@ -36,31 +43,32 @@ export default function HomePage() {
 
       <section className={`${styles.hero} surface`}>
         <div className="page-heading">
-          <span className="eyebrow">Dashboard</span>
-          <h2>Stay ready for labor conversations and fast decisions.</h2>
-          <p className="page-subtitle">
-            Review weak cards, return to the next unfinished lesson, and keep the emergency rules close.
-          </p>
+          <span className="eyebrow">{t('home.eyebrow')}</span>
+          <h2>{t('home.title')}</h2>
+          <p className="page-subtitle">{t('home.subtitle')}</p>
         </div>
 
         <div className={styles.heroGrid}>
           <div className={`${styles.statCard} surface-strong`}>
-            <span className="pill pill-brand">Due now</span>
+            <span className="pill pill-brand">{t('home.dueNow')}</span>
             <strong className="metric-value">{dueCount}</strong>
-            <p className="subtle">Open today’s review queue before the cards pile up.</p>
+            <p className="subtle">{t('home.dueDescription')}</p>
             <Link className="button-primary" to="/study">
-              Start studying
+              {t('home.startStudying')}
             </Link>
           </div>
 
           <div className={`${styles.statCard} surface-strong`}>
-            <span className="pill pill-accent">Session stats</span>
+            <span className="pill pill-accent">{t('home.sessionStats')}</span>
             <strong className="metric-value">{sessionStats.totalReviews}</strong>
             <p className="subtle">
-              {sessionStats.totalCorrect} correct / {sessionStats.totalIncorrect} again
+              {t('home.sessionSummary', {
+                correct: sessionStats.totalCorrect,
+                incorrect: sessionStats.totalIncorrect,
+              })}
             </p>
             <Link className="button-secondary" to="/quick-reference">
-              Open quick reference
+              {t('home.openQuickReference')}
             </Link>
           </div>
         </div>
@@ -68,8 +76,8 @@ export default function HomePage() {
 
       <section className="page">
         <div className="page-heading">
-          <span className="eyebrow">Category mastery</span>
-          <h2>Move cards into the strong boxes.</h2>
+          <span className="eyebrow">{t('home.categoryMastery')}</span>
+          <h2>{t('home.categoryTitle')}</h2>
         </div>
 
         <div className={styles.progressGrid}>
@@ -79,7 +87,7 @@ export default function HomePage() {
             return (
               <ProgressRing
                 key={category}
-                label={`${meta.labelEn} · ${meta.labelZh}`}
+                label={language === 'zh' ? meta.labelZh : meta.labelEn}
                 mastered={entry?.mastered ?? 0}
                 total={entry?.total ?? 0}
                 percentage={entry?.percentage ?? 0}
@@ -91,24 +99,31 @@ export default function HomePage() {
 
       <section className="page">
         <div className="page-heading">
-          <span className="eyebrow">Next lesson</span>
-          <h2>{nextLesson.titleEn}</h2>
-          <p className="page-subtitle">{nextLesson.summary}</p>
+          <span className="eyebrow">{t('home.nextLesson')}</span>
+          <h2>{nextLessonTitle}</h2>
+          <p className="page-subtitle">{nextLessonSummary}</p>
         </div>
 
         <div className={styles.lessonList}>
           {lessons.map((lesson) => {
             const progress = lessonProgress[lesson.id]
             const completeCount = progress?.completedSectionIds.length ?? 0
+            const lessonTitle = language === 'zh' ? lesson.titleZh : lesson.titleEn
+            const lessonSummary =
+              language === 'zh'
+                ? lesson.summaryZh ?? lesson.summary
+                : lesson.summaryEn ?? lesson.summary
 
             return (
               <Link key={lesson.id} className={`${styles.lessonCard} surface`} to={`/lessons/${lesson.id}`}>
                 <span className="pill pill-accent">
-                  {completeCount}/{lesson.sections.length} sections
+                  {t('lesson.sectionProgress', {
+                    completed: completeCount,
+                    total: lesson.sections.length,
+                  })}
                 </span>
-                <strong>{lesson.titleEn}</strong>
-                <span className="subtle">{lesson.titleZh}</span>
-                <p className="subtle">{lesson.summary}</p>
+                <strong>{lessonTitle}</strong>
+                <p className="subtle">{lessonSummary}</p>
               </Link>
             )
           })}

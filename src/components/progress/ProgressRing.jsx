@@ -1,4 +1,7 @@
+import { useLanguage } from '../../providers/LanguageProvider.jsx'
+
 export default function ProgressRing({ label, mastered, total, percentage }) {
+  const { t } = useLanguage()
   const clampedPercentage = Math.max(0, Math.min(percentage, 1))
   const radius = 30
   const circumference = 2 * Math.PI * radius
@@ -33,7 +36,7 @@ export default function ProgressRing({ label, mastered, total, percentage }) {
         <strong>{label}</strong>
         <span className="metric-value">{Math.round(clampedPercentage * 100)}%</span>
         <span className="subtle">
-          {mastered} mastered / {total} total
+          {t('progress.masteredTotal', { mastered, total })}
         </span>
       </div>
     </div>

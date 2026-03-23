@@ -15,6 +15,7 @@ describe('storage helpers', () => {
   it('saves and loads valid preference and study payloads', () => {
     const preferences = {
       theme: 'dark',
+      language: 'zh',
       lastRoute: '/study',
       installPromptDismissedAt: null,
     }

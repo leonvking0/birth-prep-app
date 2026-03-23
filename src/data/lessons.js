@@ -26,6 +26,10 @@ export const lessons = [
     markdown: lesson01Markdown,
     summary:
       '5-1-1, rupture of membranes, triage, epidural timing, Pitocin, and hospital logistics.',
+    summaryEn:
+      '5-1-1, rupture of membranes, triage, epidural timing, Pitocin, and hospital logistics.',
+    summaryZh:
+      '涵盖 5-1-1、破水判断、分诊、无痛时机、Pitocin 以及医院流程要点。',
     sections: [
       { id: 'hospital-timing', titleZh: '何时前往医院', titleEn: 'When to Go' },
       { id: 'prep-checklist', titleZh: '产前准备清单', titleEn: 'Prep Checklist' },
@@ -43,6 +47,10 @@ export const lessons = [
     markdown: lesson02Markdown,
     summary:
       'Question checklists, fetal monitoring, IV decisions, induction, augmentation, and partner techniques.',
+    summaryEn:
+      'Question checklists, fetal monitoring, IV decisions, induction, augmentation, and partner techniques.',
+    summaryZh:
+      '涵盖医疗提问清单、胎心监护、IV 决策、引产、加强产程与陪产支持。',
     sections: [
       { id: 'question-checklist', titleZh: '核心沟通策略', titleEn: 'Question Checklist' },
       { id: 'monitoring-and-mobility', titleZh: '胎心监测与活动受限', titleEn: 'Monitoring and Mobility' },

@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { cards } from '../data/cards.js'
 import { STORAGE_KEYS } from '../lib/storage.js'
+import { LanguageProvider } from '../providers/LanguageProvider.jsx'
 import { StudyProvider } from '../providers/StudyProvider.jsx'
 import StudyPage from './StudyPage.jsx'
 
@@ -13,14 +14,21 @@ function waitForReviewUnlock() {
   })
 }
 
-function renderStudyPage(initialEntry = '/study') {
+function renderStudyPage(initialEntry = '/study', language = 'en') {
+  window.localStorage.setItem(
+    STORAGE_KEYS.preferences,
+    JSON.stringify({ language }),
+  )
+
   return render(
     <MemoryRouter initialEntries={[initialEntry]}>
-      <StudyProvider>
-        <Routes>
-          <Route path="/study" element={<StudyPage />} />
-        </Routes>
-      </StudyProvider>
+      <LanguageProvider>
+        <StudyProvider>
+          <Routes>
+            <Route path="/study" element={<StudyPage />} />
+          </Routes>
+        </StudyProvider>
+      </LanguageProvider>
     </MemoryRouter>,
   )
 }
@@ -30,42 +38,42 @@ describe('StudyPage', () => {
     const user = userEvent.setup()
     renderStudyPage()
 
-    expect(screen.getByText('37 周前破水 为什么重要？')).toBeTruthy()
+    expect(screen.getByText(/Why does "Water Breaks Before 37 Weeks" matter\?/i)).toBeTruthy()
 
     await user.click(
       screen.getByRole('button', { name: /flip card for Water Breaks Before 37 Weeks/i }),
     )
 
-    expect(screen.getByText(/preterm labor warning/i)).toBeTruthy()
+    expect(screen.getAllByText(/preterm labor warning/i).length).toBeGreaterThan(0)
   })
 
   it('updates queue progress and localStorage after Got it and Again reviews', async () => {
     const user = userEvent.setup()
     renderStudyPage()
 
-    await user.click(screen.getByRole('button', { name: 'Got it' }))
+    await user.click(screen.getByRole('button', { name: /got it/i }))
 
     let storedStudy = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.study))
     expect(storedStudy.cardStates['warning-preterm-water-break'].box).toBe(2)
     expect(storedStudy.sessionStats.totalCorrect).toBe(1)
 
     await waitForReviewUnlock()
-    await user.click(screen.getByRole('button', { name: 'Again' }))
+    await user.click(screen.getByRole('button', { name: /again/i }))
 
     storedStudy = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.study))
     expect(storedStudy.cardStates['warning-bad-fluid-smell'].box).toBe(1)
     expect(storedStudy.cardStates['warning-bad-fluid-smell'].lastOutcome).toBe('again')
     expect(storedStudy.sessionStats.totalIncorrect).toBe(1)
 
-    expect(screen.queryByText('羊水有异味 为什么重要？')).toBeNull()
+    expect(screen.queryByText(/Why does "Bad-Smelling Amniotic Fluid" matter\?/i)).toBeNull()
   })
 
   it('ignores a second review tap while controls are locked', async () => {
     const user = userEvent.setup()
     renderStudyPage()
 
-    await user.click(screen.getByRole('button', { name: 'Got it' }))
-    await user.click(screen.getByRole('button', { name: 'Got it' }))
+    await user.click(screen.getByRole('button', { name: /got it/i }))
+    await user.click(screen.getByRole('button', { name: /got it/i }))
 
     const storedStudy = JSON.parse(window.localStorage.getItem(STORAGE_KEYS.study))
     expect(storedStudy.sessionStats.totalReviews).toBe(1)

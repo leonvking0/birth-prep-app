@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
 export const STUDY_SCHEMA_VERSION = 1
 
 const VALID_THEMES = new Set(['light', 'dark', 'system'])
+const VALID_LANGUAGES = new Set(['zh', 'en'])
 const VALID_OUTCOMES = new Set(['correct', 'again'])
 
 function getStorage() {
@@ -106,6 +107,7 @@ function normalizeCardState(cardState) {
 export function getDefaultPreferences() {
   return {
     theme: 'system',
+    language: 'zh',
     lastRoute: '/',
     installPromptDismissedAt: null,
   }
@@ -118,6 +120,7 @@ export function normalizePreferences(preferences) {
 
   return {
     theme: VALID_THEMES.has(preferences.theme) ? preferences.theme : 'system',
+    language: VALID_LANGUAGES.has(preferences.language) ? preferences.language : 'zh',
     lastRoute: typeof preferences.lastRoute === 'string' ? preferences.lastRoute : '/',
     installPromptDismissedAt: asIsoDate(preferences.installPromptDismissedAt),
   }

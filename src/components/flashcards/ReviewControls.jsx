@@ -1,18 +1,19 @@
 import { LEITNER_INTERVALS } from '../../lib/spacedRepetition.js'
+import { useLanguage } from '../../providers/LanguageProvider.jsx'
 
-function formatNextStep(box) {
+function formatNextStep(box, t) {
   const nextBox = Math.min(box + 1, 5)
   const interval = LEITNER_INTERVALS[nextBox]
 
   if (interval === 0) {
-    return 'Again this session'
+    return t('review.againThisSession')
   }
 
   if (interval === 1) {
-    return '1 day'
+    return t('review.oneDay')
   }
 
-  return `${interval} days`
+  return t('review.days', { days: interval })
 }
 
 export default function ReviewControls({
@@ -23,11 +24,17 @@ export default function ReviewControls({
   onCorrect,
   remainingCount,
 }) {
+  const { t } = useLanguage()
+
   return (
     <section className="surface install-banner" data-kind="install">
       <div className="chip-row">
-        <span className="pill pill-warning">Box {cardState.box}</span>
-        <span className="pill pill-accent">Next on success: {formatNextStep(cardState.box)}</span>
+        <span className="pill pill-warning">{t('review.box', { box: cardState.box })}</span>
+        <span className="pill pill-accent">
+          {t('review.nextOnSuccess', {
+            nextStep: formatNextStep(cardState.box, t),
+          })}
+        </span>
       </div>
 
       <div className="chip-row">
@@ -36,7 +43,7 @@ export default function ReviewControls({
             {lessonTitle}
           </span>
         ))}
-        <span className="pill pill-success">{remainingCount} left in session</span>
+        <span className="pill pill-success">{t('review.remaining', { count: remainingCount })}</span>
       </div>
 
       <div className="chip-row">
@@ -46,7 +53,7 @@ export default function ReviewControls({
           onClick={onAgain}
           type="button"
         >
-          Again
+          {t('review.again')}
         </button>
         <button
           className="button-primary"
@@ -54,13 +61,11 @@ export default function ReviewControls({
           onClick={onCorrect}
           type="button"
         >
-          Got it
+          {t('review.gotIt')}
         </button>
       </div>
 
-      <p className="subtle">
-        Resetting sends the card back to Box 1 and brings it back later in the same session.
-      </p>
+      <p className="subtle">{t('review.resetHint')}</p>
     </section>
   )
 }
