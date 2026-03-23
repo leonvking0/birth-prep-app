@@ -1,6 +1,5 @@
 .card {
   width: 100%;
-  min-height: 27rem;
   border: 0;
   padding: 0;
   background: transparent;
@@ -9,9 +8,26 @@
 
 .inner {
   position: relative;
-  min-height: 27rem;
+  min-height: 18rem;
   transform-style: preserve-3d;
   transition: transform 420ms cubic-bezier(0.2, 0.72, 0.17, 1);
+}
+
+.isFlipped .front {
+  visibility: hidden;
+}
+
+.isFlipped .back {
+  visibility: visible;
+  position: relative;
+}
+
+.isFlipped .front {
+  position: absolute;
+}
+
+.front {
+  position: relative;
 }
 
 .isFlipped {
@@ -19,16 +35,16 @@
 }
 
 .face {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  gap: var(--space-4);
-  padding: clamp(1.2rem, 4vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: clamp(1rem, 3vw, 1.4rem);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft);
   backface-visibility: hidden;
   text-align: left;
+  min-height: 18rem;
 }
 
 .front {
@@ -38,7 +54,11 @@
 }
 
 .back {
+  position: absolute;
+  inset: 0;
   transform: rotateY(180deg);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--surface-strong) 82%, transparent) 0%, var(--surface) 100%),
     radial-gradient(circle at bottom left, rgba(47, 122, 115, 0.16), transparent 28%);
@@ -51,44 +71,43 @@
 }
 
 .body {
-  display: grid;
-  gap: var(--space-4);
-  align-content: center;
-  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
 }
 
 .prompt {
   font-family: var(--font-heading);
-  font-size: clamp(1.55rem, 6vw, 2.5rem);
-  line-height: 1.18;
+  font-size: clamp(1.3rem, 5vw, 2.2rem);
+  line-height: 1.2;
 }
 
 .summary {
   font-family: var(--font-heading);
-  font-size: clamp(1.2rem, 4.8vw, 1.9rem);
-  line-height: 1.2;
-}
-
-.translationBlock {
-  display: grid;
-  gap: var(--space-3);
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  line-height: 1.25;
 }
 
 .bulletList {
-  display: grid;
-  gap: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
   padding-left: 1rem;
   color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .context {
   color: var(--text-soft);
+  font-size: 0.85rem;
+  font-style: italic;
 }
 
 .footerHint {
-  align-self: end;
+  margin-top: auto;
   color: var(--text-soft);
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
