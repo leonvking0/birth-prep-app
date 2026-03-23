@@ -94,7 +94,7 @@ export default function LessonDetailPage() {
       </section>
 
       <section className={`${styles.reader} surface`}>
-        <LessonMarkdown lesson={lesson} />
+        <LessonMarkdown language={language} lesson={lesson} />
       </section>
 
       <section className={`${styles.related} surface`}>

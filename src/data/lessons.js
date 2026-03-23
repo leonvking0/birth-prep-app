@@ -1,5 +1,7 @@
 import lesson01Raw from './lesson-01.md?raw'
+import lesson01EnRaw from './lesson-01-en.md?raw'
 import lesson02Raw from './lesson-02.md?raw'
+import lesson02EnRaw from './lesson-02-en.md?raw'
 
 // The source markdown has broken list formatting:
 // "- \n    \n    **text**" instead of "- **text**"
@@ -15,7 +17,9 @@ function cleanMarkdown(md) {
 }
 
 const lesson01Markdown = cleanMarkdown(lesson01Raw)
+const lesson01EnMarkdown = cleanMarkdown(lesson01EnRaw)
 const lesson02Markdown = cleanMarkdown(lesson02Raw)
+const lesson02EnMarkdown = cleanMarkdown(lesson02EnRaw)
 
 export const lessons = [
   {
@@ -24,6 +28,7 @@ export const lessons = [
     titleEn: 'When to Go to the Hospital',
     titleZh: '何时前往医院与常见干预',
     markdown: lesson01Markdown,
+    markdownEn: lesson01EnMarkdown,
     summary:
       '5-1-1, rupture of membranes, triage, epidural timing, Pitocin, and hospital logistics.',
     summaryEn:
@@ -45,6 +50,7 @@ export const lessons = [
     titleEn: 'Monitoring, Induction, and Partner Support',
     titleZh: '监护、催产与陪产支持',
     markdown: lesson02Markdown,
+    markdownEn: lesson02EnMarkdown,
     summary:
       'Question checklists, fetal monitoring, IV decisions, induction, augmentation, and partner techniques.',
     summaryEn:

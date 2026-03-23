@@ -1,4 +1,4 @@
-import { Children, useMemo } from 'react'
+import { Children } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 function flattenText(children) {
@@ -24,14 +24,9 @@ function slugify(text) {
     .replace(/(^-|-$)/g, '')
 }
 
-export default function LessonMarkdown({ lesson }) {
-  const headingIdMap = useMemo(
-    () =>
-      Object.fromEntries(
-        lesson.sections.map((section) => [section.titleZh.trim(), section.id]),
-      ),
-    [lesson.sections],
-  )
+export default function LessonMarkdown({ language = 'zh', lesson }) {
+  const markdown = language === 'en' ? lesson.markdownEn ?? lesson.markdown : lesson.markdown
+  let sectionHeadingIndex = -1
 
   return (
     <div className="lesson-markdown">
@@ -41,10 +36,12 @@ export default function LessonMarkdown({ lesson }) {
             return <h1>{children}</h1>
           },
           h2({ children }) {
+            sectionHeadingIndex += 1
             const headingText = flattenText(children).trim()
             const fallbackId = slugify(headingText)
+            const sectionId = lesson.sections[sectionHeadingIndex]?.id ?? fallbackId
 
-            return <h2 id={headingIdMap[headingText] ?? fallbackId}>{children}</h2>
+            return <h2 id={sectionId}>{children}</h2>
           },
           h3({ children }) {
             return <h3 id={slugify(flattenText(children))}>{children}</h3>
@@ -63,7 +60,7 @@ export default function LessonMarkdown({ lesson }) {
           },
         }}
       >
-        {lesson.markdown}
+        {markdown}
       </ReactMarkdown>
     </div>
   )
