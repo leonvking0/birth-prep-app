@@ -1,0 +1,40 @@
+status: DONE
+head_sha: 02c604da337c98dd8f4fc710df80923d34954c66
+artifacts:
+  - .dev-team-state/refined-scope-i18n.md
+  - .dev-team-state/i18n-develop.done
+  - src/components/flashcards/FlipCard.jsx
+  - src/components/flashcards/FlipCard.module.css
+  - src/components/flashcards/ReviewControls.jsx
+  - src/components/layout/AppShell.jsx
+  - src/components/layout/AppShell.module.css
+  - src/components/lesson/SectionJumpNav.jsx
+  - src/components/navigation/BottomNav.jsx
+  - src/components/progress/ProgressRing.jsx
+  - src/components/pwa/InstallBanner.jsx
+  - src/data/cards.js
+  - src/data/cards.test.js
+  - src/data/lessons.js
+  - src/data/quickReference.js
+  - src/lib/i18n.js
+  - src/lib/storage.js
+  - src/lib/storage.test.js
+  - src/main.jsx
+  - src/pages/HomePage.jsx
+  - src/pages/LessonDetailPage.jsx
+  - src/pages/LessonsPage.jsx
+  - src/pages/QuickReferencePage.jsx
+  - src/pages/QuickReferencePage.test.jsx
+  - src/pages/StudyPage.jsx
+  - src/pages/StudyPage.test.jsx
+  - src/providers/LanguageProvider.jsx
+decisions:
+  - Stored `language` alongside the existing preferences schema in localStorage, defaulting to `zh`.
+  - Implemented `LanguageProvider` with a simple in-house `t(key, params)` lookup instead of adding a third-party i18n library.
+  - Kept flashcard fronts language-selective while making flashcard backs explicitly bilingual through new `back.*Zh` and `back.*En` fields.
+  - Localized quick-reference body copy through bilingual card-back content plus bilingual checklist item objects.
+evidence:
+  - `npm test -- --run` -> 7 test files passed, 19 tests passed
+open_risks:
+  - none
+summary: Added a persistent Chinese/English language toggle to the app shell, routed all page/component UI copy through a new language provider and translations map, localized lesson titles/summaries and quick-reference content, expanded flashcard back data to carry both languages while preserving the existing study flow, updated tests for the new provider requirements, and committed the implementation at `02c604da337c98dd8f4fc710df80923d34954c66`.
