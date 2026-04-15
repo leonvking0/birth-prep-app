@@ -2,6 +2,8 @@ import lesson01Raw from './lesson-01.md?raw'
 import lesson01EnRaw from './lesson-01-en.md?raw'
 import lesson02Raw from './lesson-02.md?raw'
 import lesson02EnRaw from './lesson-02-en.md?raw'
+import lesson03Raw from './lesson-03.md?raw'
+import lesson03EnRaw from './lesson-03-en.md?raw'
 
 // The source markdown has broken list formatting:
 // "- \n    \n    **text**" instead of "- **text**"
@@ -20,6 +22,8 @@ const lesson01Markdown = cleanMarkdown(lesson01Raw)
 const lesson01EnMarkdown = cleanMarkdown(lesson01EnRaw)
 const lesson02Markdown = cleanMarkdown(lesson02Raw)
 const lesson02EnMarkdown = cleanMarkdown(lesson02EnRaw)
+const lesson03Markdown = cleanMarkdown(lesson03Raw)
+const lesson03EnMarkdown = cleanMarkdown(lesson03EnRaw)
 
 export const lessons = [
   {
@@ -71,6 +75,33 @@ export const lessons = [
       'term-telemetry',
       'term-induction',
       'action-counter-pressure',
+    ],
+  },
+  {
+    id: 'lesson-03',
+    slug: 'c-sections-recovery-and-hospital-logistics',
+    titleEn: 'C-Sections, Recovery, and Hospital Logistics',
+    titleZh: '剖腹产、恢复与医院后勤',
+    markdown: lesson03Markdown,
+    markdownEn: lesson03EnMarkdown,
+    summary:
+      'C-section types, triage flow, pushing, golden hour, recovery timeline, and hospital logistics.',
+    summaryEn:
+      'C-section types, triage flow, pushing, golden hour, recovery timeline, and hospital logistics.',
+    summaryZh:
+      '涵盖剖腹产类型、分诊流程、用力阶段、黄金两小时、恢复时间线与医院后勤。',
+    sections: [
+      { id: 'understanding-c-sections', titleZh: '了解剖腹产', titleEn: 'Understanding C-Sections' },
+      { id: 'birthing-unit-and-triage', titleZh: '产房与分诊流程', titleEn: 'Birthing Unit and Triage' },
+      { id: 'pushing-and-golden-hour', titleZh: '用力阶段与黄金两小时', titleEn: 'Pushing and the Golden Hour' },
+      { id: 'recovery-first-days', titleZh: '产后前几天的恢复', titleEn: 'Recovery During the First Few Days' },
+      { id: 'hospital-logistics', titleZh: '医院后勤与配套资源', titleEn: 'Hospital Logistics and Amenities' },
+    ],
+    relatedCardIds: [
+      'term-elective-c-section',
+      'term-dermabond',
+      'rule-triage-40-minutes',
+      'action-take-stool-softeners',
     ],
   },
 ]

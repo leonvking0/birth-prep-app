@@ -572,6 +572,88 @@ const medicalTerms = [
       '第 01 课把提前了解催乳食物与支持方式，列入产前准备清单。',
     tags: ['postpartum', 'feeding'],
   }),
+  createMedicalCard({
+    id: 'term-elective-c-section',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['understanding-c-sections'],
+    termEn: 'Elective C-section',
+    termZh: '择期剖腹产',
+    definition:
+      'A planned cesarean booked ahead of time for a known situation or medical reason.',
+    definitionZh:
+      '因已知情况或医疗原因，提前预约安排好的剖腹产。',
+    context:
+      'Lesson 03 contrasts elective, emergency, and crash C-sections so families understand they are not the same level of urgency.',
+    contextZh:
+      '第 03 课区分了择期、急诊和 crash 剖腹产，帮助家长理解它们的紧急程度完全不同。',
+    tags: ['c-section', 'surgery'],
+  }),
+  createMedicalCard({
+    id: 'term-crash-c-section-lesson3',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['understanding-c-sections'],
+    termEn: 'Crash C-section',
+    termZh: '紧急剖腹产',
+    definition:
+      'A true obstetric emergency where the baby must be delivered immediately.',
+    definitionZh:
+      '真正的产科急症，宝宝必须立刻娩出。',
+    context:
+      'Lesson 03 gives cord prolapse as an example and notes a hospital record of 59 seconds from detection to birth.',
+    contextZh:
+      '第 03 课以脐带脱垂为例，并提到该院最快纪录是从发现到出生仅 59 秒。',
+    tags: ['c-section', 'emergency'],
+    quickRef: true,
+  }),
+  createMedicalCard({
+    id: 'term-dermabond',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['understanding-c-sections'],
+    termEn: 'Dermabond',
+    termZh: 'Dermabond 手术胶',
+    definition:
+      'A surgical glue that may be used over an incision instead of only relying on dissolvable stitches.',
+    definitionZh:
+      '一种可用于覆盖手术切口的外科胶，不只是单纯依靠可吸收缝线。',
+    context:
+      'Lesson 03 says some families consider it because it may reduce scarring and infection risk, though it can cost extra.',
+    contextZh:
+      '第 03 课说有些家庭会考虑使用它，因为可能减少疤痕和感染风险，但往往需要额外付费。',
+    tags: ['c-section', 'recovery'],
+  }),
+  createMedicalCard({
+    id: 'term-peanut-ball',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['birthing-unit-and-triage'],
+    termEn: 'Peanut Ball',
+    termZh: '花生球',
+    definition:
+      'A peanut-shaped support ball placed between the legs to help keep the pelvis open during labor.',
+    definitionZh:
+      '一种花生形状的辅助球，可夹在双腿之间，帮助产程中维持骨盆打开。',
+    context:
+      'Lesson 03 highlights it as especially useful after an epidural when mobility is reduced.',
+    contextZh:
+      '第 03 课特别提到，打完无痛、活动受限时，它尤其有帮助。',
+    tags: ['mobility', 'labor-support'],
+  }),
+  createMedicalCard({
+    id: 'term-golden-hour',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['pushing-and-golden-hour'],
+    termEn: 'Golden Hour',
+    termZh: '黄金两小时 / 黄金时段',
+    definition:
+      'The immediate period after birth when bonding, skin-to-skin, and feeding are prioritized.',
+    definitionZh:
+      '宝宝出生后的最初时段，会优先安排 bonding、肌肤接触和喂养。',
+    context:
+      'Lesson 03 says weighing and measuring may be delayed for up to two hours to protect this period.',
+    contextZh:
+      '第 03 课说，为了保护这段时间，称重和量身长可能会延后最多两小时。',
+    tags: ['postpartum', 'bonding'],
+    quickRef: true,
+  }),
 ]
 
 const ruleCards = [
@@ -774,6 +856,66 @@ const ruleCards = [
     explanationZh:
       '剖腹产后，下一次怀孕通常最好间隔 18 到 24 个月。',
     tags: ['c-section', 'family-planning'],
+    quickRef: true,
+  }),
+  createRuleCard({
+    id: 'rule-triage-40-minutes',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['birthing-unit-and-triage'],
+    titleEn: 'Triage Monitoring Window',
+    titleZh: '分诊监护时长',
+    label: 'Triage monitoring window',
+    keyNumber: 'About 40 minutes',
+    explanation:
+      'Arrival triage often includes about 40 minutes on the monitor before the next decision is made.',
+    explanationZh:
+      '到院分诊后，通常会先上监护大约 40 分钟，再决定下一步。',
+    tags: ['triage', 'fetal-monitoring'],
+    quickRef: true,
+  }),
+  createRuleCard({
+    id: 'rule-golden-hour-delay',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['pushing-and-golden-hour'],
+    titleEn: 'Delayed Weighing Window',
+    titleZh: '延后称重窗口',
+    label: 'Delayed weighing window',
+    keyNumber: 'Up to 2 hours',
+    explanation:
+      'Weighing and measuring may be delayed up to two hours to protect skin-to-skin and early feeding.',
+    explanationZh:
+      '为了保护肌肤接触和早期喂养，称重和量身长可能会延后最多两小时。',
+    tags: ['golden-hour', 'bonding'],
+    quickRef: true,
+  }),
+  createRuleCard({
+    id: 'rule-day-2-crash',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['recovery-first-days'],
+    titleEn: 'Day 2-3 Hormone Crash',
+    titleZh: '第 2-3 天激素崩溃期',
+    label: 'Day 2-3 hormone crash',
+    keyNumber: 'Day 2-3',
+    explanation:
+      'The lesson warns that day 2 to 3 is often when hormones crash, milk comes in, and emotions spike.',
+    explanationZh:
+      '课程提醒，第 2 到 3 天常是激素下滑、泌乳开始、情绪最容易爆发的时候。',
+    tags: ['postpartum', 'recovery'],
+    quickRef: true,
+  }),
+  createRuleCard({
+    id: 'rule-c-section-no-driving',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['recovery-first-days'],
+    titleEn: 'Driving Restriction After C-section',
+    titleZh: '剖腹产后禁驾时长',
+    label: 'Driving restriction after C-section',
+    keyNumber: '~1 month',
+    explanation:
+      'After a C-section, driving is usually avoided for about one month because sudden braking can be dangerous.',
+    explanationZh:
+      '剖腹产后通常约 1 个月内不建议开车，因为紧急刹车会有风险。',
+    tags: ['c-section', 'recovery'],
     quickRef: true,
   }),
 ]
@@ -1159,6 +1301,107 @@ const actionCards = [
     howToZh:
       '把这些自发向下的压力和声音当成重要信息，而不是一味压住不理。',
     tags: ['body-signals', 'partner-support'],
+    quickRef: true,
+  }),
+  createActionCard({
+    id: 'action-set-triage-timer',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['birthing-unit-and-triage'],
+    titleEn: 'Set a Silent Triage Timer',
+    titleZh: '在分诊时设静音计时器',
+    action: 'Set a silent timer when triage monitoring starts.',
+    actionZh: '开始分诊监护时，自己设一个静音计时器。',
+    whenToUse: 'Use this once you are connected to the monitor in triage.',
+    whenToUseZh: '到院分诊、开始上监护后就可以用。',
+    howTo:
+      'Track roughly 40 minutes yourself so the waiting period feels less vague and you know when to ask what comes next.',
+    howToZh:
+      '自己记住大约 40 分钟的窗口，减少模糊等待感，也更知道何时可以主动问下一步。',
+    tags: ['triage', 'self-advocacy'],
+    quickRef: true,
+  }),
+  createActionCard({
+    id: 'action-use-labor-circuit',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['birthing-unit-and-triage'],
+    titleEn: 'Use a Labor Movement Circuit',
+    titleZh: '做产程活动循环',
+    action: 'Rotate among movement tools to help labor keep progressing.',
+    actionZh: '在不同活动方式之间轮换，帮助产程继续前进。',
+    whenToUse: 'Use this in early labor or while waiting in the birthing unit if movement is allowed.',
+    whenToUseZh: '产程早期或在产房等待时，只要允许活动就适用。',
+    howTo:
+      'Cycle through the exercise ball, peanut ball, shower, and other upright or open-pelvis positions instead of staying still.',
+    howToZh:
+      '在分娩球、花生球、淋浴和其他直立或打开骨盆的姿势之间轮换，不要一直静止不动。',
+    tags: ['mobility', 'labor-support'],
+    quickRef: true,
+  }),
+  createActionCard({
+    id: 'action-expect-baby-appearance',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['pushing-and-golden-hour'],
+    titleEn: 'Expect a Blue or Cone-Shaped Baby at First',
+    titleZh: '先预期宝宝可能发青或头型拉长',
+    action: 'Prepare yourself so the baby’s first appearance does not cause unnecessary panic.',
+    actionZh: '先做心理准备，避免宝宝刚出来的样子引发不必要恐慌。',
+    whenToUse: 'Use this before pushing or birth so you know what can still be normal.',
+    whenToUseZh: '在进入用力和分娩前就先了解，知道哪些现象仍属正常。',
+    howTo:
+      'Remember that temporary blue color and a cone-shaped head can be normal right after birth and usually improve after the first breath.',
+    howToZh:
+      '记住，刚出生时短暂发青和头型偏长常常是正常的，第一次呼吸后通常会慢慢改善。',
+    tags: ['newborn', 'expectations'],
+  }),
+  createActionCard({
+    id: 'action-sleep-on-day-1',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['recovery-first-days'],
+    titleEn: 'Sleep Aggressively on Day 1',
+    titleZh: '第 1 天尽量猛睡',
+    action: 'Use the sleepy first day to get as much rest as possible.',
+    actionZh: '利用第 1 天宝宝爱睡的窗口，尽量多休息。',
+    whenToUse: 'Use this during the first postpartum day when adrenaline is high but the baby is often still very sleepy.',
+    whenToUseZh: '产后第 1 天、你还靠肾上腺素撑着、但宝宝通常还很爱睡时使用。',
+    howTo:
+      'Treat every quiet stretch as sleep time rather than social or administrative time.',
+    howToZh:
+      '把每段安静时间都当成补觉时间，而不是拿来社交或处理杂事。',
+    tags: ['postpartum', 'recovery'],
+    quickRef: true,
+  }),
+  createActionCard({
+    id: 'action-take-stool-softeners',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['recovery-first-days'],
+    titleEn: 'Take the Stool Softeners',
+    titleZh: '把软便剂吃上',
+    action: 'Take stool softeners if they are offered during recovery.',
+    actionZh: '恢复期如果医院有给软便剂，直接吃。',
+    whenToUse: 'Use this during postpartum recovery, especially after pain meds, stitches, or a C-section.',
+    whenToUseZh: '产后恢复期都适用，尤其用了止痛药、有缝线或经历剖腹产时。',
+    howTo:
+      'Do not try to tough it out. Early stool softening can make the first bowel movement much easier.',
+    howToZh:
+      '不要硬扛。早点软化大便，第一次排便会轻松很多。',
+    tags: ['postpartum', 'recovery'],
+    quickRef: true,
+  }),
+  createActionCard({
+    id: 'action-screen-visitors',
+    lessonIds: ['lesson-03'],
+    sourceSections: ['hospital-logistics'],
+    titleEn: 'Screen Visitors by Energy',
+    titleZh: '按能量筛选访客',
+    action: 'Only allow visitors who genuinely help recovery.',
+    actionZh: '只让真正对恢复有帮助的人来探访。',
+    whenToUse: 'Use this before and during the hospital stay when people ask to visit.',
+    whenToUseZh: '住院前后，只要有人提出想来探望就适用。',
+    howTo:
+      'Ask whether this person will bring food, help, and calm, or whether they will create hosting pressure. Choose accordingly.',
+    howToZh:
+      '先问自己，这个人是会带来食物、帮忙和安定，还是会制造待客压力，再决定要不要见。',
+    tags: ['boundaries', 'postpartum'],
     quickRef: true,
   }),
 ]
